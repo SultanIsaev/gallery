@@ -1,0 +1,34 @@
+spring:
+  main:
+    web-application-type: servlet
+
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:postgresql://localhost/gallery
+    jdbc-url: jdbc:tc:postgresql://localhost/gallery
+    username: postgres
+    password: postgres
+  #  r2dbc:
+  #    url: r2dbc:tc:postgresql://localhost/gallery?TC_IMAGE_TAG=12.3
+  #    username: postgres
+  #    password: postgres
+
+  flyway:
+    url: jdbc:postgresql://localhost/gallery
+    user: gallery_flyway
+    password: postgres
+    schemas: gallery
+    baseline-on-migrate: true
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+server:
+  servlet:
+    context-path: /api
+  rest:
+    endpoints:
+      aromas:
+        path: /aromas
+      perfumers:
+        path: /perfumers

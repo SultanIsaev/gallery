@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: gallery
+  main:
+    web-application-type: servlet
+
+  datasource:
+    url: jdbc:postgresql://localhost/gallery
+    name: gallery
+    username: gallery
+    password: postgres
+    properties:
+      schema: gallery
+    driver-class-name: org.postgresql.Driver
+
+  flyway:
+    url: jdbc:postgresql://localhost/gallery
+    user: gallery_flyway
+    password: postgres
+    schemas: gallery
+    baseline-on-migrate: true
+
+
+server:
+  servlet:
+    context-path: /api
+  rest:
+    endpoints:
+      aromas:
+        path: /aromas
+      perfumers:
+        path: /perfumers
