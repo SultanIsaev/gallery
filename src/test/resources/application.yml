@@ -3,15 +3,13 @@ spring:
     web-application-type: servlet
 
   datasource:
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     url: jdbc:tc:postgresql://localhost/gallery
-    jdbc-url: jdbc:tc:postgresql://localhost/gallery
+    name: gallery
     username: postgres
     password: postgres
-  #  r2dbc:
-  #    url: r2dbc:tc:postgresql://localhost/gallery?TC_IMAGE_TAG=12.3
-  #    username: postgres
-  #    password: postgres
+    properties:
+      schema: gallery
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
 
   flyway:
     url: jdbc:postgresql://localhost/gallery
@@ -20,6 +18,7 @@ spring:
     schemas: gallery
     baseline-on-migrate: true
   jpa:
+    database: POSTGRESQL
     hibernate:
       ddl-auto: create
 

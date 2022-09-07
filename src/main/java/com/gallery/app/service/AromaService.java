@@ -69,6 +69,8 @@ public class AromaService {
                 bindRelations(changedAromaBuilder, request);
 
                 return toDto(aromaRepository.save(changedAromaBuilder.build()));
+            } else {
+                throw of(HttpStatus.BAD_REQUEST.value(), "No changes provided", ERROR_BAD_REQUEST);
             }
         }
         throw of(HttpStatus.BAD_REQUEST.value(), "Aroma does not exist", ERROR_BAD_REQUEST);

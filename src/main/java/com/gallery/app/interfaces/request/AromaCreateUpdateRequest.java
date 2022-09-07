@@ -21,21 +21,18 @@ public class AromaCreateUpdateRequest {
     private String description;
 
     public boolean hasChangesForUpdate(Aroma request) {
-        boolean isNameTheSame = Objects.equals(name, request.getName());
-        boolean isDescriptionTheSame = Objects.equals(description, request.getDescription());
-
-        boolean isCountryTheSame = true;
-        boolean isPerfumerTheSame = true;
+        boolean isEqual = Objects.equals(name, request.getName()) &&
+                Objects.equals(description, request.getDescription());
 
         Country actualCountry = request.getCountry();
         if (actualCountry != null) {
-            isCountryTheSame = Objects.equals(countryId, actualCountry.getId());
+            isEqual = isEqual && Objects.equals(countryId, actualCountry.getId());
         }
         Perfumer actualPerfumer = request.getPerfumer();
-        if (actualCountry != null) {
-            isPerfumerTheSame = Objects.equals(perfumerId, actualPerfumer.getId());
+        if (actualPerfumer != null) {
+            isEqual = isEqual && Objects.equals(perfumerId, actualPerfumer.getId());
         }
 
-        return !(isNameTheSame && isDescriptionTheSame && isCountryTheSame && isPerfumerTheSame);
+        return !isEqual;
     }
 }

@@ -76,16 +76,14 @@ class AromaControllerIT {
         aromaCountry = countryRepository.save(getAromaDefaultCountry().build());
         perfumerCountry = countryRepository.save(getPerfumerDefaultCountry().build());
 
-        Perfumer perfumer = getDefaultPerfumer().build();
-        perfumer.setCountryId(perfumerCountry.getId());
-        this.perfumer = perfumerRepository.save(perfumer);
+        Perfumer defaultPerfumer = getDefaultPerfumer().build();
+        defaultPerfumer.setCountry(perfumerCountry);
+        this.perfumer = perfumerRepository.save(defaultPerfumer);
 
         Aroma defaultAroma = getDefaultAroma().build();
-//        defaultAroma.setPerfumerId(this.perfumer.getId());
-//        defaultAroma.setCountryId(aromaCountry.getId());
-        defaultAroma.setPerfumer(perfumer);
+        defaultAroma.setPerfumer(defaultPerfumer);
         defaultAroma.setCountry(aromaCountry);
-        aroma = aromaRepository.save(defaultAroma);
+        this.aroma = aromaRepository.save(defaultAroma);
     }
 
     @AfterEach
@@ -173,7 +171,6 @@ class AromaControllerIT {
 
     @Test
     void findAromaById_countryNotExists_shouldReturnAllDataButCountry() throws Exception {
-//        aroma.setCountryId(null);
         aroma.setCountry(null);
         aromaRepository.save(aroma);
 
@@ -388,6 +385,25 @@ class AromaControllerIT {
     }
 
     @Test
+    void updateAroma_onlyNotExistingCountrySentInRequest_Error() throws Exception {
+        AromaCreateUpdateRequest updatedAroma = AromaCreateUpdateRequest.builder()
+                .name(perfumer.getFirstName())
+                .description(perfumer.getDescription())
+                .perfumerId(perfumer.getId())
+                .countryId(((short) 99))
+                .build();
+
+        mockMvc.perform(put(aromasPath + "/" + aroma.getId())
+                        .content(mapper.writeValueAsString(updatedAroma))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.value())))
+                .andExpect(jsonPath("$.message", is("Country does not exist")))
+                .andExpect(jsonPath("$.title-i18n", is(ERROR_BAD_REQUEST)));
+    }
+
+    @Test
     void updateAroma_notExistingPerfumerAndCountrySentInRequest_Error() throws Exception {
         perfumer.setId(99);
         aromaCountry.setId((short) 99);
@@ -405,6 +421,25 @@ class AromaControllerIT {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.value())))
                 .andExpect(jsonPath("$.message", is("Perfumer does not exist,Country does not exist")))
+                .andExpect(jsonPath("$.title-i18n", is(ERROR_BAD_REQUEST)));
+    }
+
+    @Test
+    void updateAroma_noChangesProvided_Error() throws Exception {
+        AromaCreateUpdateRequest updatedAroma = AromaCreateUpdateRequest.builder()
+                .name(aroma.getName())
+                .description(aroma.getDescription())
+                .perfumerId(aroma.getPerfumer().getId())
+                .countryId(aroma.getCountry().getId())
+                .build();
+
+        mockMvc.perform(put(aromasPath + "/" + aroma.getId())
+                        .content(mapper.writeValueAsString(updatedAroma))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.value())))
+                .andExpect(jsonPath("$.message", is("No changes provided")))
                 .andExpect(jsonPath("$.title-i18n", is(ERROR_BAD_REQUEST)));
     }
 
