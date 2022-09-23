@@ -12,6 +12,8 @@ spring:
     properties:
       schema: gallery
     driver-class-name: org.postgresql.Driver
+  jpa:
+    database: POSTGRESQL
 
   flyway:
     url: jdbc:postgresql://localhost/gallery

@@ -1,9 +1,16 @@
+CREATE TABLE IF NOT EXISTS country
+(
+    id           SERIAL2 PRIMARY KEY,
+    country_code VARCHAR(3),
+    country_name VARCHAR(70)
+);
+---------------------------------------------
 CREATE TABLE IF NOT EXISTS perfumer
 (
     id          SERIAL PRIMARY KEY,
     first_name  VARCHAR(50) NOT NULL,
     last_name   VARCHAR(50) NOT NULL,
-    country_id  SMALLINT,
+    country_id  SMALLINT REFERENCES country (id),
     email       VARCHAR(255),
     description VARCHAR
 );
@@ -11,8 +18,8 @@ CREATE TABLE IF NOT EXISTS perfumer
 CREATE TABLE IF NOT EXISTS aroma
 (
     id          SERIAL PRIMARY KEY,
-    perfumer_id INT,
-    country_id  SMALLINT,
+    perfumer_id INT REFERENCES perfumer (id),
+    country_id  SMALLINT REFERENCES country (id),
     aroma_name  VARCHAR(100) NOT NULL,
     description VARCHAR
 );
@@ -21,7 +28,7 @@ CREATE TABLE IF NOT EXISTS brand
 (
     id          SERIAL PRIMARY KEY,
     brand_name  VARCHAR(100) NOT NULL,
-    country_id  SMALLINT,
+    country_id  SMALLINT REFERENCES country (id),
     description VARCHAR
 );
 
@@ -31,10 +38,10 @@ CREATE TABLE IF NOT EXISTS brands_perfumers
     perfumer_id INT REFERENCES perfumer (id)
 );
 
-CREATE TABLE IF NOT EXISTS brands_perfumes
+CREATE TABLE IF NOT EXISTS brands_aromas
 (
-    brand_id   INT REFERENCES brand (id),
-    perfume_id INT REFERENCES aroma (id)
+    brand_id INT REFERENCES brand (id),
+    aroma_id INT REFERENCES aroma (id)
 );
 ---------------------------------------------
 CREATE TABLE IF NOT EXISTS family
@@ -46,8 +53,8 @@ CREATE TABLE IF NOT EXISTS family
 
 CREATE TABLE IF NOT EXISTS families_perfumes
 (
-    family_id  INT REFERENCES family (id),
-    perfume_id INT REFERENCES aroma (id)
+    family_id INT REFERENCES family (id),
+    aroma_id  INT REFERENCES aroma (id)
 );
 ---------------------------------------------
 CREATE TABLE IF NOT EXISTS accord
@@ -74,11 +81,4 @@ CREATE TABLE IF NOT EXISTS notes_accords
 (
     note_id   INT REFERENCES note (id),
     accord_id INT REFERENCES accord (id)
-);
----------------------------------------------
-CREATE TABLE IF NOT EXISTS country
-(
-    id           SERIAL2 PRIMARY KEY,
-    country_code VARCHAR(3),
-    country_name VARCHAR(70)
 );
