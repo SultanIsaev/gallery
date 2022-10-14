@@ -114,8 +114,6 @@ class AromaControllerIT {
                 .name("Second aroma name")
                 .description("Second aroma description")
                 .build();
-//        secondAroma.setPerfumerId(this.perfumer.getId());
-//        secondAroma.setCountryId(aromaCountry.getId());
         secondAroma.setPerfumer(perfumer);
         secondAroma.setCountry(aromaCountry);
         secondAroma = aromaRepository.save(secondAroma);

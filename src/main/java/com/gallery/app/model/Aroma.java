@@ -29,12 +29,6 @@ public class Aroma {
     @Column(name = "id")
     private Integer id;
 
-//    @Column(name = "perfumer_id")
-//    private Integer perfumerId;
-//
-//    @Column(name = "country_id")
-//    private Short countryId;
-
     @Column(name = "aroma_name")
     private String name;
 
